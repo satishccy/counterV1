@@ -1,0 +1,120 @@
+#pragma version 10
+
+smart_contracts.counter.contract.Counter.approval_program:
+    intcblock 0 1
+    bytecblock "counter"
+    txn ApplicationID
+    bnz main_after_if_else@2
+    callsub __init__
+
+main_after_if_else@2:
+    callsub __puya_arc4_router__
+    return
+
+
+// smart_contracts.counter.contract.Counter.__init__() -> void:
+__init__:
+    // smart_contracts/counter/contract.py:8
+    // def __init__(self)->None:
+    proto 0 0
+    // smart_contracts/counter/contract.py:9
+    // self.counter = UInt64(0)
+    bytec_0 // "counter"
+    intc_0 // 0
+    app_global_put
+    retsub
+
+
+// smart_contracts.counter.contract.Counter.__puya_arc4_router__() -> uint64:
+__puya_arc4_router__:
+    // smart_contracts/counter/contract.py:5
+    // class Counter(ARC4Contract):
+    proto 0 1
+    txn NumAppArgs
+    bz __puya_arc4_router___bare_routing@6
+    pushbytess 0x2fa47328 0x4b5bddfd // method "increment()void", method "decrement()void"
+    txna ApplicationArgs 0
+    match __puya_arc4_router___increment_route@2 __puya_arc4_router___decrement_route@3
+    intc_0 // 0
+    retsub
+
+__puya_arc4_router___increment_route@2:
+    // smart_contracts/counter/contract.py:11
+    // @abimethod()
+    txn OnCompletion
+    !
+    assert // OnCompletion is not NoOp
+    txn ApplicationID
+    assert // can only call when not creating
+    callsub increment
+    intc_1 // 1
+    retsub
+
+__puya_arc4_router___decrement_route@3:
+    // smart_contracts/counter/contract.py:15
+    // @abimethod()
+    txn OnCompletion
+    !
+    assert // OnCompletion is not NoOp
+    txn ApplicationID
+    assert // can only call when not creating
+    callsub decrement
+    intc_1 // 1
+    retsub
+
+__puya_arc4_router___bare_routing@6:
+    // smart_contracts/counter/contract.py:5
+    // class Counter(ARC4Contract):
+    txn OnCompletion
+    bnz __puya_arc4_router___after_if_else@10
+    txn ApplicationID
+    !
+    assert // can only call when creating
+    intc_1 // 1
+    retsub
+
+__puya_arc4_router___after_if_else@10:
+    // smart_contracts/counter/contract.py:5
+    // class Counter(ARC4Contract):
+    intc_0 // 0
+    retsub
+
+
+// smart_contracts.counter.contract.Counter.increment() -> void:
+increment:
+    // smart_contracts/counter/contract.py:11-12
+    // @abimethod()
+    // def increment(self)->None:
+    proto 0 0
+    // smart_contracts/counter/contract.py:13
+    // self.counter += UInt64(1)
+    intc_0 // 0
+    bytec_0 // "counter"
+    app_global_get_ex
+    assert // check self.counter exists
+    intc_1 // 1
+    +
+    bytec_0 // "counter"
+    swap
+    app_global_put
+    retsub
+
+
+// smart_contracts.counter.contract.Counter.decrement() -> void:
+decrement:
+    // smart_contracts/counter/contract.py:15-16
+    // @abimethod()
+    // def decrement(self)->None:
+    proto 0 0
+    // smart_contracts/counter/contract.py:17
+    // self.counter -= UInt64(1)
+    intc_0 // 0
+    bytec_0 // "counter"
+    app_global_get_ex
+    assert // check self.counter exists
+    intc_1 // 1
+    -
+    bytec_0 // "counter"
+    swap
+    app_global_put
+    retsub

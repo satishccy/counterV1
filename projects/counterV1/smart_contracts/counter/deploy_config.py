@@ -28,9 +28,20 @@ def deploy(
         on_schema_break=algokit_utils.OnSchemaBreak.AppendApp,
         on_update=algokit_utils.OnUpdate.AppendApp,
     )
-    name = "world"
-    response = app_client.hello(name=name)
+
+    globalState = app_client.app_client.get_global_state()
     logger.info(
-        f"Called hello on {app_spec.contract.name} ({app_client.app_id}) "
-        f"with name={name}, received: {response.return_value}"
+        f"Deployed {app_spec.contract.name} ({app_client.app_id}) with global state: {globalState}"
+    )
+
+    result =app_client.increment()
+    globalState = app_client.app_client.get_global_state()
+    logger.info(
+        f"incremented counter txid: {result.tx_id} with global state: {globalState}"
+    )
+
+    result =app_client.decrement()
+    globalState = app_client.app_client.get_global_state()
+    logger.info(
+        f"decremented counter txid: {result.tx_id} with global state: {globalState}"
     )
