@@ -1,6 +1,6 @@
 # counterV1
 
-Welcome to your new AlgoKit project!
+Welcome to the Counter AlgoKit project!
 
 This is your workspace root. A `workspace` in AlgoKit is an orchestrated collection of standalone projects (backends, smart contracts, frontend apps and etc).
 
